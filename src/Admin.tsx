@@ -104,9 +104,6 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
             </Footer>
           </Layout>
         </Layout>
-
-        {/* 全局Loading */}
-
       </React.Fragment>
     );
   }

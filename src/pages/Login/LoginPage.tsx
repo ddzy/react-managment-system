@@ -22,7 +22,9 @@ import { checkLogin } from './LoginPage.redux';
 
 
 
-
+/**
+ * 登录页
+ */
 interface ILoginProps extends FormComponentProps {
   checkLogin: (data: { adminname: string, adminpwd: string, remember: boolean }) => void;
   LoginPageReducer: { isAuth: boolean, message: string | '' };
@@ -50,9 +52,6 @@ class Login extends React.PureComponent<ILoginProps, ILoginState> {
         
         // 跳转到home
         message.loading('请等待...', 2, () => {
-          // localStorage.hasOwnProperty('admin')
-          //   ? window.location.href = '/home'
-          //   : this.props.history.push('/login');
           window.location.href = '/home';
         });   
       }
