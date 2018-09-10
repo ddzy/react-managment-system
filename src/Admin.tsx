@@ -67,7 +67,7 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
               <CSSTransition
                 key={this.props.location.pathname}
                 timeout={1000}
-                classNames="fade"
+                classNames="left"
               >
                 <Content style={{ position: 'relative', 'minHeight': '530px' }}>
                   {this.props.children}
