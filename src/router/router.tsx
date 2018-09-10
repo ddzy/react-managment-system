@@ -25,6 +25,7 @@ import EchartsPiePage from '../pages/Echarts/EchartsPie/EchartsPiePage';
 import EchartsLinePage from '../pages/Echarts/EchartsLine/EchartsLinePage';
 import IBasicTablePage from '../pages/Table/TableBasic/TableBasicPage';
 import CityPage from '../pages/City/CityPage';
+import RichEditorPage from '../pages/RichEditor/RichEditorPage';
 
 
 
@@ -57,6 +58,7 @@ class RouterConfig extends React.PureComponent<{}, {}> {
                     <Route path="/chart/line" component={EchartsLinePage} />
                     <Route path="/table/basic" component={IBasicTablePage} />
                     <Route path="/city" component={CityPage} />
+                    <Route path="/richeditor" component={RichEditorPage} />
                   </Switch>
                 </Admin>
               )}
