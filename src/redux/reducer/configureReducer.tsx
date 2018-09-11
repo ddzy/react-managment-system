@@ -9,6 +9,7 @@ import { EchartsPieReducer } from '../../pages/Echarts/EchartsPie/EchartsPie.red
 import { EchartsLineReducer } from '../../pages/Echarts/EchartsLine/EchartsLine.redux';
 import { TableBasicReducer } from '../../pages/Table/TableBasic/TableBasic.redux';
 import { CityPageReducer } from '../../pages/City/CityPage.redux';
+import { OrderPageReducer } from '../../pages/Order/Order.redux';
 
 
 
@@ -23,6 +24,7 @@ const reducer = combineReducers({
   EchartsLineReducer,
   TableBasicReducer,
   CityPageReducer,
+  OrderPageReducer,
 });
 
 

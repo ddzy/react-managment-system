@@ -76,4 +76,4 @@ class RichEditorPage extends React.PureComponent<
 }
 
 
-export default RichEditorPage;
+export default RichEditorPage as React.ComponentClass;

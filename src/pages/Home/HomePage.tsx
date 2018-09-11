@@ -73,4 +73,4 @@ class HomePage extends React.PureComponent<{}, {}> {
   }
 }
 
-export default HomePage;
+export default HomePage as React.ComponentClass;
