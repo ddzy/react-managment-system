@@ -45,11 +45,23 @@ class Order extends React.PureComponent<
   }
 
 
+  /**
+   * 处理查询
+   */
+  public handleSearch = (
+    values: any
+  ) => {
+    console.log(values);
+  }
+
+
   public render(): JSX.Element {
     return (
       <OrderContainer>
         <OrderMain>
-          <OrderSearch />
+          <OrderSearch 
+            onSearch={this.handleSearch}
+          />
           <OrderShow 
             dataSource={[]}
           />

@@ -1,29 +1,56 @@
 import * as React from 'react';
-import { Form, Select, Button } from 'antd';
+import { 
+  Form, 
+  Select, 
+  Button, 
+  Input,
+  DatePicker,
+} from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
 
 import { SearchWrapper } from './style';
+import { isArray } from 'util';
 
 
 export interface ICitySearchProps extends FormComponentProps {
-  // onSubmit: (values: any) => void;
+  onSearch: (values: any) => void;
 };
+
 
 
 const CitySearch: React.SFC<ICitySearchProps> = (props: ICitySearchProps): JSX.Element => {
 
   const { getFieldDecorator } = props.form;
 
-  // 重置
+  /**
+   * 重置表单
+   */
   const handleReset: React.FormEventHandler = (): void => {
     props.form.resetFields();
   }
 
-  // 提交
+  /**
+   * 提交数据
+   * @param e FormEvent
+   */
   const handleSubmit: React.FormEventHandler = (e: React.FormEvent): void => {
     e.preventDefault();
-    props.form.validateFields((err, values) => {
-      console.log(values);
+    props.form.validateFields((err, fieldsValue) => {
+
+      // 格式化日期
+      const rangeTimeValue = fieldsValue['orderDateDuring'];
+      const values: object = {
+        ...fieldsValue,
+        orderDateDuring: isArray(rangeTimeValue) 
+          && {
+            from: rangeTimeValue.length !== 0 
+              && rangeTimeValue[0].format('YYYY-MM-DD HH:mm:ss'),
+            to: rangeTimeValue.length !== 0
+              && rangeTimeValue[1].format('YYYY-MM-DD HH:mm:ss'), 
+          },  
+      };
+
+      props.onSearch(values);
     });
   }
 
@@ -32,62 +59,62 @@ const CitySearch: React.SFC<ICitySearchProps> = (props: ICitySearchProps): JSX.E
       <Form
         layout="inline"
       >
-        <Form.Item label="城市">
-          {getFieldDecorator('city', {
+        <Form.Item label="订单编号">
+          {getFieldDecorator('orderId', {
             rules: [],
+            initialValue: '',
           })(
-            <Select style={{ width: 120 }}>
-              <Select.Option value="东莞">东莞</Select.Option>
-              <Select.Option value="上海">上海</Select.Option>
-              <Select.Option value="北京">北京</Select.Option>
-              <Select.Option value="广州">广州</Select.Option>
-              <Select.Option value="杭州">杭州</Select.Option>
-              <Select.Option value="浙江">浙江</Select.Option>
-              <Select.Option value="云南">云南</Select.Option>
-              <Select.Option value="庆阳">庆阳</Select.Option>
-              <Select.Option value="西安">西安</Select.Option>
-              <Select.Option value="咸阳">咸阳</Select.Option>
-              <Select.Option value="西峰">西峰</Select.Option>
-            </Select>
+            <Input 
+              type="text"
+              placeholder="请输入要查询的订单编号"
+            />
           )}
         </Form.Item>
-        <Form.Item label="用车模式">
-          {getFieldDecorator('carMode', {
+        <Form.Item label="订单用户">
+          {getFieldDecorator('orderUser', {
             rules: [],
+            initialValue: '',
           })(
-            <Select style={{ width: 120 }}>
-              <Select.Option value="停车点">停车点</Select.Option>
-              <Select.Option value="禁停区">禁停区</Select.Option>
-            </Select>
+            <Input 
+              type="text"
+              placeholder="输入要查询的用户名"
+            />
           )}
         </Form.Item>
-        <Form.Item label="营收模式">
-          {getFieldDecorator('moneyMode', {
+        <Form.Item label="时间戳">
+          {getFieldDecorator('orderDateDuring', {
             rules: [],
-            initialValue: '加盟'
+            initialValue: '',
           })(
-            <Select style={{ width: 120 }}>
-              <Select.Option value="加盟">加盟</Select.Option>
-              <Select.Option value="自营">自营</Select.Option>
-            </Select>
+            <DatePicker.RangePicker />
           )}
         </Form.Item>
-        <Form.Item label="授权商">
-          {getFieldDecorator('authShop', {
+        <Form.Item label="状态">
+          {getFieldDecorator('orderState', {
             rules: [],
+            initialValue: '',
           })(
             <Select style={{ width: 120 }}>
-              <Select.Option value="芒果自营">芒果自营</Select.Option>
-              <Select.Option value="西瓜自营">西瓜自营</Select.Option>
-              <Select.Option value="苹果自营">苹果自营</Select.Option>
-              <Select.Option value="香蕉自营">香蕉自营</Select.Option>
-              <Select.Option value="菠萝自营">菠萝自营</Select.Option>
+              <Select.Option value="已结束">已结束</Select.Option>
+              <Select.Option value="未开始">未开始</Select.Option>
+              <Select.Option value="进行中">进行中</Select.Option>
             </Select>
           )}
         </Form.Item>
         <Form.Item>
-          <Button htmlType="submit" onClick={handleSubmit}>查询</Button>
-          <Button htmlType="reset" onClick={handleReset}>重置</Button>
+          <Button 
+            htmlType="submit"
+            type="primary" 
+            style={{
+              marginRight: '10px',
+            }}
+            onClick={handleSubmit}
+          >查询</Button>
+          <Button 
+            htmlType="reset" 
+            type="primary"
+            onClick={handleReset}  
+          >重置</Button>
         </Form.Item>
       </Form>
     </SearchWrapper>
