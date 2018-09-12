@@ -5,6 +5,7 @@ import {
   message, 
   Button,
 } from 'antd';
+import { History } from 'history';
 
 import {
   OrderContainer,
@@ -19,6 +20,8 @@ import OrderShow from './order_show/OrderShow';
 
 
 export interface IOrderProps {
+  history: History;
+
   OrderPageReducer: { order_list: any[] };
 
   reduxHandleGetOrderList: (
@@ -65,7 +68,7 @@ class Order extends React.PureComponent<
    */
   public handleSearch = (
     values: any
-  ) => {
+  ): void => {
     this.props.reduxHandleFilterOrderList(
       values,
       () => {
@@ -78,7 +81,10 @@ class Order extends React.PureComponent<
   /**
    * 初始化表格数据
    */
-  public  handleInitTable = (): { dataSource: object[], columns: object[] } => {
+  public  handleInitTable = (): { 
+    dataSource: object[], 
+    columns: object[] 
+  } => {
     const dataSource: object[] = this.props
       .OrderPageReducer.order_list
       .map((item: any) => {
@@ -143,11 +149,35 @@ class Order extends React.PureComponent<
   public handleRowChange = (
     rowKey: string,
     rows: any,
-  ) => {
+  ): void => {
     this.setState({
       rowKey,
       rows,
     });
+  }
+
+
+  /**
+   * 处理 订单详情 点击
+   */
+  public handleToDetailsClick: React.MouseEventHandler = (
+    e: React.MouseEvent,
+  ): void => {
+    this.state.rows
+      ? this.props.history.push(
+          `/order/details/${this.state.rowKey}`,
+        )
+      : message.error('请选择订单!');
+  }
+
+
+  /**
+   * 处理 结束订单 点击
+   */
+  public handleCloseOrderClick: React.MouseEventHandler = (
+    e: React.MouseEvent,
+  ): void => {
+    console.log(222);
   }
 
 
@@ -160,6 +190,7 @@ class Order extends React.PureComponent<
         <Button
           htmlType="button"
           type="primary"
+          onClick={this.handleToDetailsClick}
         >订单详情</Button>
         <Button
           htmlType="button"
@@ -167,6 +198,7 @@ class Order extends React.PureComponent<
           style={{
             marginLeft: '10px',
           }}
+          onClick={this.handleCloseOrderClick}
         >结束订单</Button>
       </React.Fragment>
     );
