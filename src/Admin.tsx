@@ -96,12 +96,14 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
 
                 </Content>
               </CSSTransition>
+
+              {/* Common footer */}
+              <Footer>
+                <BaseFooter />
+              </Footer>
             </TransitionGroup>
             
-            {/* Common footer */}
-            <Footer>
-              <BaseFooter />
-            </Footer>
+
           </Layout>
         </Layout>
       </React.Fragment>

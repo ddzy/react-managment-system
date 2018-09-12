@@ -97,7 +97,7 @@ class BaseHeader extends React.PureComponent<IBaseHeaderProps, IBaseHeaderState>
                 icon="user"
                 // size={45}
                 size="large"
-                style={{backgroundColor: '#09c'}}
+                style={{backgroundColor: '#1890ff'}}
               />
             </AdminInfo>
           </Popover>

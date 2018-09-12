@@ -1,12 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Card } from 'antd';
+import { 
+  Card, 
+  message, 
+  Button,
+} from 'antd';
 
 import {
   OrderContainer,
   OrderMain,
 } from './style';
-import { reduxHandleGetOrderList } from './Order.redux';
+import { 
+  reduxHandleGetOrderList, 
+  reduxHandleFilterOrderList,
+} from './Order.redux';
 import OrderSearch from './order_search/OrderSearch';
 import OrderShow from './order_show/OrderShow';
 
@@ -19,8 +26,15 @@ export interface IOrderProps {
     pageSize: number,
     callback?: () => void,
   ) => void;
+  reduxHandleFilterOrderList: (
+    values: any,
+    callback?: () => void,
+  ) => void;
 };
-interface IOrderState {};
+interface IOrderState {
+  readonly rowKey: string,
+  readonly rows: any,
+};
 
 
 
@@ -32,7 +46,10 @@ class Order extends React.PureComponent<
   IOrderState
 > {
 
-  public readonly state = {}
+  public readonly state = {
+    rowKey: '',
+    rows: '',
+  }
 
 
   public componentDidMount(): void {
@@ -49,10 +66,18 @@ class Order extends React.PureComponent<
   public handleSearch = (
     values: any
   ) => {
-    console.log(values);
+    this.props.reduxHandleFilterOrderList(
+      values,
+      () => {
+        message.info('成功获取到过滤的Mock数据!');
+      },  
+    );
   }
 
-  // 初始化表格数据
+
+  /**
+   * 初始化表格数据
+   */
   public  handleInitTable = (): { dataSource: object[], columns: object[] } => {
     const dataSource: object[] = this.props
       .OrderPageReducer.order_list
@@ -119,7 +144,32 @@ class Order extends React.PureComponent<
     rowKey: string,
     rows: any,
   ) => {
-    console.log(rowKey);
+    this.setState({
+      rowKey,
+      rows,
+    });
+  }
+
+
+  /**
+   * 初始化Card头部
+   */
+  public handleInitCardTitle = (): JSX.Element => {
+    return (
+      <React.Fragment>
+        <Button
+          htmlType="button"
+          type="primary"
+        >订单详情</Button>
+        <Button
+          htmlType="button"
+          type="primary"
+          style={{
+            marginLeft: '10px',
+          }}
+        >结束订单</Button>
+      </React.Fragment>
+    );
   }
 
 
@@ -133,7 +183,7 @@ class Order extends React.PureComponent<
             />
           </Card>
           <Card
-            title="展示"
+            title={this.handleInitCardTitle()}
             style={{
               textAlign: 'left',
               marginTop: '15px',
@@ -160,6 +210,7 @@ function mapStateToProps(state: any) {
 function mapDispatchToProps() {
   return {
     reduxHandleGetOrderList,
+    reduxHandleFilterOrderList,
   };
 }
 

@@ -68,3 +68,27 @@ export function reduxHandleGetOrderList(
     }); 
   };
 }
+
+
+/**
+ * 订单页 处理筛选订单列表
+ * @param values 筛选列表
+ */
+export function reduxHandleFilterOrderList(
+  values: any,
+  callback?: () => void,
+) {
+  return (dispatch: ThunkDispatch<any, any, any>) => {
+    query({
+      method: 'GET',
+      url: '/order/filter/orderlist',
+      jsonp: false,
+      data: {
+        values,
+      },
+    }).then((res) => {
+      dispatch(saveOrderList(res.data));
+      callback && callback();
+    });
+  };
+}
