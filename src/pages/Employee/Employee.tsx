@@ -15,6 +15,7 @@ import {
   reduxHandleGetOneEmployee,
 } from './Employee.redux';
 import EmployeeShow from './EmployeeShow/EmployeeShow';
+import EmployeeDisplayModal from './EmployeeModal/EmployeeDisplayModal';
 
 
 export interface IEmployeeProps {
@@ -36,6 +37,11 @@ interface IEmployeeState {
   tableLoading: boolean;
   rowKey: string;
   rows: any;
+
+  displayModal: {
+    displayModalVisible: boolean,
+    displayModalTitle: string,
+  };
 };
 
 
@@ -49,6 +55,10 @@ class Employee extends React.PureComponent<
     tableLoading: false,
     rowKey: '',
     rows: '',
+    displayModal: {
+      displayModalVisible: false,
+      displayModalTitle: '员工详情',
+    },
   }
 
 
@@ -174,16 +184,35 @@ class Employee extends React.PureComponent<
 
 
   /**
+   * 处理 员工详情 Modal切换
+   */
+  public handleToggleModal = (): void => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        displayModal: {
+          ...prevState.displayModal,
+          displayModalVisible: !prevState.displayModal.displayModalVisible,
+        },
+      };
+    });
+  }
+
+
+  /**
    * 处理 员工详情
    */
   public handleEmployeeDisplayClick: React.MouseEventHandler = (
     e: React.MouseEvent,
   ) => {
-    this.state.rowKey 
-      ? this.props.reduxHandleGetOneEmployee(
-          this.state.rowKey,
-        )
-      : message.error('请选择一个员工!');
+    if(this.state.rowKey) {
+      this.handleToggleModal();
+      this.props.reduxHandleGetOneEmployee(
+        this.state.rowKey,
+      );
+    }else {
+      message.error('请选择一个员工!');
+    }
   }
 
 
@@ -200,6 +229,12 @@ class Employee extends React.PureComponent<
             onPanigation={this.handlePagination}
           />
         </Card>
+
+        {/* 员工详情 */}
+        <EmployeeDisplayModal 
+          {...this.state.displayModal}
+          onToggleModal={this.handleToggleModal}
+        />
       </EmployeeContainer>
     );
   }
