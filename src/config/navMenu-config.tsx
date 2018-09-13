@@ -111,7 +111,7 @@ const menuList = [
 	},
 	{
 		title: '职工管理',
-		key: '/user'
+		key: '/employee'
 	},
 	{
 		title: '分布地图',

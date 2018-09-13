@@ -28,7 +28,7 @@ import CityPage from '../pages/City/CityPage';
 import RichEditorPage from '../pages/RichEditor/RichEditorPage';
 import Order from '../pages/Order/Order';
 import Details from '../pages/Details/Details';
-
+import Employee from '../pages/Employee/Employee';
 
 
 
@@ -63,6 +63,7 @@ class RouterConfig extends React.PureComponent<{}, {}> {
                     <Route path="/richeditor" component={RichEditorPage} />
                     <Route exact path="/order" component={Order} />
                     <Route path="/order/details/:id" component={Details} />
+                    <Route path="/employee" component={Employee} />
                   </Switch>
                 </Admin>
               )}
