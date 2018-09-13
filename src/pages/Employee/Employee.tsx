@@ -211,7 +211,7 @@ class Employee extends React.PureComponent<
         this.state.rowKey,
       );
     }else {
-      message.error('请选择一个员工!');
+      message.error('请至少选择一个员工!');
     }
   }
 
@@ -233,6 +233,7 @@ class Employee extends React.PureComponent<
         {/* 员工详情 */}
         <EmployeeDisplayModal 
           {...this.state.displayModal}
+          {...this.props.EmployeePageReducer}
           onToggleModal={this.handleToggleModal}
         />
       </EmployeeContainer>
