@@ -5,6 +5,7 @@ import {
   Button, 
   Divider,
   message,
+  Modal,
 } from 'antd';
 
 import {
@@ -13,6 +14,7 @@ import {
 import {
   reduxHandleGetEmployeeList,
   reduxHandleGetOneEmployee,
+  reduxHandleDeleteOneEmployee,
 } from './Employee.redux';
 import EmployeeShow from './EmployeeShow/EmployeeShow';
 import EmployeeDisplayModal from './EmployeeModal/EmployeeDisplayModal';
@@ -31,6 +33,11 @@ export interface IEmployeeProps {
   ) => void;
   reduxHandleGetOneEmployee: (
     employeeId: string,
+    callback?: () => void,
+  ) => void;
+  reduxHandleDeleteOneEmployee: (
+    employeeId: string,
+    callback?: () => void,
   ) => void;
 };
 interface IEmployeeState {
@@ -172,6 +179,7 @@ class Employee extends React.PureComponent<
         <Button
           htmlType="button"
           type="primary"
+          onClick={this.handleEmployeeDeleteClick}
         >删除员工</Button>
         <Divider type="vertical" />
         <Button
@@ -216,6 +224,26 @@ class Employee extends React.PureComponent<
   }
 
 
+  /**
+   * 处理 员工删除
+   */
+  public handleEmployeeDeleteClick: React.MouseEventHandler = (
+    e: React.MouseEvent
+  ): void => {
+    Modal.confirm({
+      title: '确定要删除该员工么?',
+      onOk: () => {
+        this.props.reduxHandleDeleteOneEmployee(
+          this.state.rowKey,
+          () => {
+            message.success('成功删除该员工!');
+          },
+        );
+      },
+    });
+  }
+
+
   public render(): JSX.Element {
     return (
       <EmployeeContainer>
@@ -252,6 +280,7 @@ function mapDispatchToProps() {
   return {
     reduxHandleGetEmployeeList,
     reduxHandleGetOneEmployee,
+    reduxHandleDeleteOneEmployee,
   };
 }
 

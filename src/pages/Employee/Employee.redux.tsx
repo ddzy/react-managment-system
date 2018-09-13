@@ -14,6 +14,8 @@ const initialState: IInitialState = {
 
 export const SAVE_EMPLOYEE_LIST = 'SAVE_EMPLOYEE_LIST' as string;
 export const SAVE_ONE_EMPLOYEE_INFO = 'SAVE_ONE_EMPLOYEE_INFO' as string;
+export const SAVE_DELETE_ONE_EMPLOYEE = 'SAVE_DELETE_ONE_EMPLOYEE' as string;
+
 
 
 export function saveEmployeeList(
@@ -30,6 +32,15 @@ export function saveOneEmployeeInfo(
 ): { type: string, payload: any } {
   return {
     type: SAVE_ONE_EMPLOYEE_INFO,
+    payload: data,
+  };
+}
+
+export function saveDeleteOneEmployee(
+  data: any
+): { type: string, payload: any } {
+  return {
+    type: SAVE_DELETE_ONE_EMPLOYEE,
     payload: data,
   };
 }
@@ -51,6 +62,16 @@ export function EmployeePageReducer(
       return {
         ...state,
         one_employee_info: action.payload.one_employee_info,
+      };
+    }
+    case SAVE_DELETE_ONE_EMPLOYEE: {
+      return {
+        ...state,
+        employee_list: state
+          .employee_list
+          .filter((item: any) => {
+            return item.employeeId !== action.payload.deleted_employee_info.employeeId;
+          }),
       };
     }
     default: {
@@ -108,6 +129,31 @@ export function reduxHandleGetOneEmployee(
       },
     }).then((res) => {
       dispatch(saveOneEmployeeInfo(res.data));
+      callback && callback();
+    });
+  };
+}
+
+
+/**
+ * 员工管理 删除单个员工
+ * @param employeeId 删除的员工id
+ * @param callback 回调
+ */
+export function reduxHandleDeleteOneEmployee(
+  employeeId: string,
+  callback?: () => void,
+) {
+  return (dispatch: ThunkDispatch<any, any, any>) => {
+    query({
+      method: 'GET',
+      url: '/employee/delete',
+      jsonp: false,
+      data: {
+        employeeId,
+      },
+    }).then((res) => {
+      dispatch(saveDeleteOneEmployee(res.data));
       callback && callback();
     });
   };
