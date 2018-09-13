@@ -9,9 +9,16 @@ export interface ICityShowProps {
   dataSource: object[];
   columns: any;
 
+  tableLoading: boolean;
+
   onRowChange: (
     rowKey: string,
     rows: any,
+  ) => void;
+
+  onPanigation: (
+    page: number,
+    pageSize: number,
   ) => void;
 };
 
@@ -27,9 +34,11 @@ const CityShow: React.SFC<ICityShowProps> = (props: ICityShowProps): JSX.Element
     <ShowWrapper>
       <BaseTable 
         showType={true}
+        tableLoading={props.tableLoading}
         columns={props.columns}
         dataSource={props.dataSource}
         onRowChange={props.onRowChange}
+        onPagination={props.onPanigation}
       />
     </ShowWrapper>
   );

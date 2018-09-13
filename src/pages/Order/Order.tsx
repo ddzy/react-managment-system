@@ -14,6 +14,7 @@ import {
 import { 
   reduxHandleGetOrderList, 
   reduxHandleFilterOrderList,
+  reduxHandleEndOrder,
 } from './Order.redux';
 import OrderSearch from './order_search/OrderSearch';
 import OrderShow from './order_show/OrderShow';
@@ -33,10 +34,15 @@ export interface IOrderProps {
     values: any,
     callback?: () => void,
   ) => void;
+  reduxHandleEndOrder: (
+    orderId: string,
+    callback?: () => void,
+  ) => void;
 };
 interface IOrderState {
-  readonly rowKey: string,
-  readonly rows: any,
+  readonly rowKey: string;
+  readonly rows: any;
+  readonly tableLoading: boolean;
 };
 
 
@@ -52,14 +58,12 @@ class Order extends React.PureComponent<
   public readonly state = {
     rowKey: '',
     rows: '',
+    tableLoading: false,
   }
 
 
   public componentDidMount(): void {
-    this.props.reduxHandleGetOrderList(
-      1,
-      10,
-    );
+    this.handlePanigation(1, 10);
   }
 
 
@@ -79,7 +83,7 @@ class Order extends React.PureComponent<
 
 
   /**
-   * 初始化表格数据
+   * 处理 初始化表格数据
    */
   public  handleInitTable = (): { 
     dataSource: object[], 
@@ -177,12 +181,20 @@ class Order extends React.PureComponent<
   public handleCloseOrderClick: React.MouseEventHandler = (
     e: React.MouseEvent,
   ): void => {
-    console.log(222);
+    this.setState({ tableLoading: true });
+
+    this.props.reduxHandleEndOrder(
+      this.state.rowKey,
+      () => {
+        this.setState({ tableLoading: false });
+        message.success('成功结束订单!');
+      },
+    );
   }
 
 
   /**
-   * 初始化Card头部
+   * 处理 初始化Card头部
    */
   public handleInitCardTitle = (): JSX.Element => {
     return (
@@ -205,6 +217,27 @@ class Order extends React.PureComponent<
   }
 
 
+  /**
+   * 处理 分页
+   */
+  public handlePanigation = (
+    page: number,
+    pageSize: number,
+  ): void => {
+    this.setState({ tableLoading: true });
+
+    this.props.reduxHandleGetOrderList(
+      page,
+      pageSize,
+      () => {
+        this.setState({
+          tableLoading: false,
+        });
+      },
+    );
+  }
+
+
   public render(): JSX.Element {
     return (
       <OrderContainer>
@@ -223,7 +256,9 @@ class Order extends React.PureComponent<
           >
             <OrderShow 
               {...this.handleInitTable()}
+              tableLoading={this.state.tableLoading}
               onRowChange={this.handleRowChange}
+              onPanigation={this.handlePanigation}
             />
           </Card>
         </OrderMain>
@@ -243,6 +278,7 @@ function mapDispatchToProps() {
   return {
     reduxHandleGetOrderList,
     reduxHandleFilterOrderList,
+    reduxHandleEndOrder,
   };
 }
 

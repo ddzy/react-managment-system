@@ -15,7 +15,7 @@ const { Sider, Header, Footer, Content } = Layout;
 
 
 export interface IAdminProps extends RouteComponentProps<any> {
-  
+
 };
 
 interface IAdminState {
@@ -44,6 +44,7 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
     });
   }
 
+
   public render(): JSX.Element {
     return (
       <React.Fragment>
@@ -52,7 +53,7 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
           <Sider
             collapsible
             collapsed={this.state.isCollapsed}
-            onCollapse={(callapsed) => this.handleToggleCollapse(callapsed)}  
+            onCollapse={(callapsed) => this.handleToggleCollapse(callapsed)}
           >
             <BaseNav />
           </Sider>
@@ -63,11 +64,15 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
             </Header>
 
             {/* Router-view */}
-            <TransitionGroup className="transition-router" >
+            <TransitionGroup
+              className="transition-router"
+
+            >
               <CSSTransition
                 key={this.props.location.pathname}
                 timeout={1000}
                 classNames="left"
+                in={true}
               >
                 <Content style={{ position: 'relative', 'minHeight': '530px' }}>
                   {this.props.children}
@@ -88,7 +93,7 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
                     >
                       <Spin
                         style={{ position: 'absolute', bottom: '5%', }}
-                        size="large" 
+                        size="large"
                         tip="加载中..."
                         indicator={<Icon type="loading" />} />
                     </div>
@@ -96,14 +101,12 @@ class Admin extends React.PureComponent<IAdminProps, IAdminState> {
 
                 </Content>
               </CSSTransition>
-
-              {/* Common footer */}
-              <Footer>
-                <BaseFooter />
-              </Footer>
             </TransitionGroup>
             
-
+            {/* Common footer */}
+            <Footer>
+              <BaseFooter />
+            </Footer>
           </Layout>
         </Layout>
       </React.Fragment>

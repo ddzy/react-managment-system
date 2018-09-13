@@ -4,6 +4,8 @@ import { Table } from 'antd';
 
 
 export interface IBaseTableProps {
+  tableLoading: boolean;     // 加载状态
+
   columns: object[];
   dataSource: any;
   showType: boolean;      // 是否显示单选框
@@ -11,7 +13,12 @@ export interface IBaseTableProps {
   onRowChange: (          // 处理选中行
     rowKey: string,
     rows: any,
-  ) => void;    
+  ) => void;
+  
+  onPagination: (         // 处理分页
+    page: number,
+    pageSize: number,
+  ) => void;     
 };
 
 
@@ -46,13 +53,31 @@ const BaseTable = (
     props.onRowChange(rowKey, rows);
   }
 
+
+  /**
+   * 处理分页
+   * @param page 当前页数
+   * @param pageSize 当前页显示条数
+   */
+  function handleChange(
+    page: number, 
+    pageSize: number,
+  ) {
+    props.onPagination(page, pageSize);
+  }
+
   
   return (
-    <Table 
+    <Table
+      loading={props.tableLoading} 
       bordered={true}
       dataSource={props.dataSource || []}
       columns={props.columns || []}
       rowSelection={handleInitRowSelection()}
+      pagination={{
+        total: 30,
+        onChange: handleChange,
+      }}
     />
   );
 

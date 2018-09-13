@@ -61,7 +61,7 @@ class RouterConfig extends React.PureComponent<{}, {}> {
                     <Route path="/table/basic" component={IBasicTablePage} />
                     <Route path="/city" component={CityPage} />
                     <Route path="/richeditor" component={RichEditorPage} />
-                    <Route path="/order" component={Order} />
+                    <Route exact path="/order" component={Order} />
                     <Route path="/order/details/:id" component={Details} />
                   </Switch>
                 </Admin>

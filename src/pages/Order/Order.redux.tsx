@@ -92,3 +92,28 @@ export function reduxHandleFilterOrderList(
     });
   };
 }
+
+
+/**
+ * 订单页 处理结束订单
+ * @param orderId 要结束的订单id
+ * @param callback 回调
+ */
+export function reduxHandleEndOrder(
+  orderId: string,
+  callback?: () => void,
+) {
+  return (dispatch: ThunkDispatch<any, any, any>) => {
+    query({
+      method: 'GET',
+      url: '/order/end',
+      jsonp: false,
+      data: {
+        orderId,
+      },
+    }).then((res) => {
+      dispatch(saveOrderList(res.data));
+      callback && callback();
+    });
+  };
+}
