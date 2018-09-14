@@ -18,6 +18,7 @@ import {
 } from './Employee.redux';
 import EmployeeShow from './EmployeeShow/EmployeeShow';
 import EmployeeDisplayModal from './EmployeeModal/EmployeeDisplayModal';
+import EmployeeControlModal from './EmployeeModal/EmployeeControlModal';
 
 
 export interface IEmployeeProps {
@@ -45,6 +46,19 @@ interface IEmployeeState {
   rowKey: string;
   rows: any;
 
+  // 编辑Modal
+  editControlModal: {
+    drawerTitle: string,
+    drawerVisible: boolean,
+  };
+
+  // 新建Modal
+  createControlModal: {
+    drawerTitle: string,
+    drawerVisible: boolean;
+  };
+
+  // 详情modal
   displayModal: {
     displayModalVisible: boolean,
     displayModalTitle: string,
@@ -65,6 +79,14 @@ class Employee extends React.PureComponent<
     displayModal: {
       displayModalVisible: false,
       displayModalTitle: '员工详情',
+    },
+    editControlModal: {
+      drawerTitle: '编辑员工',
+      drawerVisible: false,
+    },
+    createControlModal: {
+      drawerTitle: '新建员工',
+      drawerVisible: false,
     },
   }
 
@@ -174,6 +196,7 @@ class Employee extends React.PureComponent<
         <Button
           htmlType="button"
           type="primary"
+          onClick={this.handleToggleCreateDrawer}
         >添加员工</Button>
         <Divider type="vertical" />
         <Button
@@ -244,6 +267,24 @@ class Employee extends React.PureComponent<
   }
 
 
+  /**
+   * 处理 切换 新建drawer
+   */
+  public handleToggleCreateDrawer: React.MouseEventHandler = (
+    e: React.MouseEvent,
+  ): void => {
+    this.setState((prevState) => {
+      return {
+        ...this.state,
+        createControlModal: {
+          ...this.state.createControlModal,
+          drawerVisible: !prevState.createControlModal.drawerVisible,
+        },
+      };
+    });
+  }
+
+
   public render(): JSX.Element {
     return (
       <EmployeeContainer>
@@ -263,6 +304,12 @@ class Employee extends React.PureComponent<
           {...this.state.displayModal}
           {...this.props.EmployeePageReducer}
           onToggleModal={this.handleToggleModal}
+        />
+
+        {/* 创建员工 */}
+        <EmployeeControlModal 
+          {...this.state.createControlModal}
+          onToggleCreateDrawer={this.handleToggleCreateDrawer}
         />
       </EmployeeContainer>
     );

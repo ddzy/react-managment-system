@@ -47,3 +47,10 @@ export const ItemContent = styled<IStyleProps, 'div'>('div')`
   height: 100%;
   color: #999;
 `;
+
+
+
+//// 编辑&添加员工 模态框
+export const EmployeeControlWrapper = styled<IStyleProps, 'div'>('div')`
+  text-align: left;
+`;
