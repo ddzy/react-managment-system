@@ -25,6 +25,10 @@ export interface IEmployeeControlModalProps extends FormComponentProps {
   onToggleCreateDrawer: (
     e: React.MouseEvent,
   ) => void;
+
+  onSubmit: (
+    values: any,
+  ) => void;
 };
 
 
@@ -52,7 +56,7 @@ const EmployeeControlModal: React.SFC<
               .format('YYYY-MM-DD HH:mm:ss'),
           };
 
-          console.log(values);
+          props.onSubmit(values);
         }
       });
     }

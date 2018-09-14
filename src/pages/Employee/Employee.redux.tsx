@@ -160,5 +160,33 @@ export function reduxHandleDeleteOneEmployee(
 }
 
 
+/**
+ * 员工管理 新增员工
+ * @param employeeId 员工id
+ * @param employeeInfo 新建员工信息
+ * @param callback 回调
+ */
+export function reduxHandleCreateOneEmployee(
+  employeeId: string,
+  employeeInfo: any,
+  callback?: () => void,
+) {
+  return (dispatch: ThunkDispatch<any, any, any>): void => {
+    query({
+      method: 'POST',
+      url: '/employee/create',
+      jsonp: false,
+      data: {
+        employeeId,
+        employeeInfo,
+      },
+    }).then((res) => {
+      console.log(res);
+      callback && callback();
+    });
+  };
+}
+
+
 
 
