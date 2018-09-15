@@ -21,6 +21,7 @@
     "echarts-for-react": "^2.0.14",
     "jsonp": "^0.2.1",
     "masonry-layout": "^4.2.2",
+    "rc-bmap": "^0.2.4",
     "rc-queue-anim": "^1.6.5",
     "react": "^16.4.2",
     "react-addons-css-transition-group": "^15.6.2",
