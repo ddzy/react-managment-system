@@ -115,3 +115,10 @@ table {
 .ql-container {
 	min-height: 500px;
 }
+
+
+/* 百度地图 */
+#bmap-container .ant-card-body div:first-child {
+	min-height: 500px;
+}
+
