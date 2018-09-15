@@ -119,6 +119,6 @@ table {
 
 /* 百度地图 */
 #bmap-container .ant-card-body div:first-child {
-	min-height: 500px;
+	min-height: 700px;
 }
 

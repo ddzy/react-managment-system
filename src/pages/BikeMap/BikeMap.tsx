@@ -1,19 +1,20 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { 
+import {
   Card,
 } from 'antd';
-import { 
-  Map, 
+import {
+  Map,
   Marker,
+  Polygon,
 } from 'rc-bmap';
 
 import {
   BikeMapContainer,
 } from './style';
-import { 
-  IInitialState, 
-  reduxHandleGetBikeMapInfo, 
+import {
+  IInitialState,
+  reduxHandleGetBikeMapInfo,
 } from './BikeMap.redux';
 
 
@@ -25,14 +26,14 @@ export interface IBikeMapProps {
     callback?: () => void,
   ) => void;
 };
-interface IBikeMapState {};
+interface IBikeMapState { };
 
 
 //// 分布地图页
 class BikeMap extends React.PureComponent<
   IBikeMapProps,
   IBikeMapState
-> {
+  > {
 
   public readonly state = {}
 
@@ -64,7 +65,7 @@ class BikeMap extends React.PureComponent<
         console.log("locationError", event);
       }
     } as object;
-    
+
     return {
       offset,
       locationIcon,
@@ -78,8 +79,29 @@ class BikeMap extends React.PureComponent<
   /**
    * 处理 初始化多边形控件
    */
-  public handleInitPolygon = () => {
-    console.log(222);
+  public handleInitMarker = () => {
+    return this.props
+      .BikeMapPageReducer
+      .bike_map_info
+      .bikePoints
+      .map((item) => {
+        return (
+          <Marker
+            key={item.lng}
+            point={{
+              lat: item.lat,
+              lng: item.lng,
+            }}
+            icon={{
+              url: './assets/bike.jpg',
+              size: {
+                width: 106,
+                height: 125,
+              },
+            }}
+          />
+        );
+      })
   }
 
 
@@ -97,23 +119,29 @@ class BikeMap extends React.PureComponent<
               lat: 23.03509484,
               lng: 113.13402564,
             }}
-            zoom={14}
+            zoom={12}
             mapStyle={{
               style: 'light',
             }}
+            scrollWheelZoom={true}
           >
-            <Marker 
-              point={{
-                lat: 23.03509484,
-                lng: 113.13402564,
-              }}
-              icon={{
-                url: './assets/bike.jpg',
-                size: {
-                  width: 106,
-                  height: 125,
-                },
-              }}
+            {/* 标注 */}
+            {this.handleInitMarker()}
+
+            {/* 折现 */}
+            <Polygon
+              points={
+                this.props.BikeMapPageReducer.bike_map_info.bikePoints
+              } 
+              strokeColor="#1890ff" 
+              fillColor="#fff" 
+              strokeWeight={2} 
+              strokeOpacity={1} 
+              fillOpacity={0} 
+              strokeStyle="dashed" 
+              massClear={false} 
+              editing={false} 
+              clicking={true} 
             />
           </Map>
         </Card>
