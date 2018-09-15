@@ -11,6 +11,7 @@ import {
   DatePicker,
 } from 'antd';
 import { FormComponentProps } from 'antd/lib/form';
+import * as moment from 'moment';
 
 
 import {
@@ -21,6 +22,16 @@ import {
 export interface IEmployeeControlModalProps extends FormComponentProps {
   drawerVisible: boolean;
   drawerTitle: string;
+  isEdit: boolean;
+
+  employeeAddress?: any,
+  employeeBelongCity?: any,
+  employeeGender?: any,
+  employeeId?: any,
+  employeeJoinTime?: any,
+  employeeMarry?: any,
+  employeeName?: any,
+  employeeState?: any,
 
   onToggleCreateDrawer: (
     e: React.MouseEvent,
@@ -39,7 +50,6 @@ const EmployeeControlModal: React.SFC<
   > = (props: IEmployeeControlModalProps): JSX.Element => {
 
     const { getFieldDecorator } = props.form;
-
 
     const handleSubmit: React.FormEventHandler = (
       e: React.FormEvent,
@@ -66,6 +76,7 @@ const EmployeeControlModal: React.SFC<
       <EmployeeControlWrapper>
         <Drawer
           placement="right"
+          destroyOnClose={true}
           style={{
             textAlign: 'left',
           }}
@@ -87,7 +98,10 @@ const EmployeeControlModal: React.SFC<
                     rules: [{
                       required: true,
                       message: '员工姓名不能为空!'
-                    }]
+                    }],
+                    initialValue: props.isEdit 
+                      ? props.employeeName
+                      : ''
                   })(
                     <Input
                       type="text"
@@ -104,7 +118,10 @@ const EmployeeControlModal: React.SFC<
                     rules: [{
                       required: true,
                       message: '请至少选择一个!'
-                    }]
+                    }],
+                    initialValue: props.isEdit
+                      ? props.employeeGender
+                      : ''
                   })(
                     <Radio.Group buttonStyle="solid">
                       <Radio.Button value="男">
@@ -128,7 +145,9 @@ const EmployeeControlModal: React.SFC<
                       required: true,
                       message: '至少选择一个状态!',
                     }],
-                    initialValue: "老油条",
+                    initialValue: props.isEdit
+                      ? props.employeeState
+                      : '老油条',
                   })(
                     <Select>
                       <Select.Option value="老油条">
@@ -155,7 +174,10 @@ const EmployeeControlModal: React.SFC<
                     rules: [{
                       required: true,
                       message: '至少选择一个!',
-                    }]
+                    }],
+                    initialValue: props.isEdit
+                      ? props.employeeMarry
+                      : ''
                   })(
                     <Radio.Group buttonStyle="solid">
                       <Radio.Button
@@ -176,7 +198,10 @@ const EmployeeControlModal: React.SFC<
                     rules: [{
                       required: true,
                       message: '地址为必填项!',
-                    }]
+                    }],
+                    initialValue: props.isEdit
+                      ? props.employeeAddress
+                      : '',
                   })(
                     <Input
                       type="text"
@@ -191,7 +216,18 @@ const EmployeeControlModal: React.SFC<
                     rules: [{
                       required: true,
                       message: '入职时间必填项!',
-                    }]
+                    }],
+                    initialValue: props.isEdit
+                      ? moment(
+                          props.employeeJoinTime,
+                          'YYYY-MM-DD',
+                        )
+                      : moment(
+                          new Date()
+                            .toLocaleDateString()
+                            .replace('/', '-'),
+                            'YYYY-MM-DD',
+                        ),
                   })(
                     <DatePicker />
                   )}
@@ -205,7 +241,10 @@ const EmployeeControlModal: React.SFC<
                     rules: [{
                       required: true,
                       message: '此为必填项!',
-                    }]
+                    }],
+                    initialValue: props.isEdit
+                      ? props.employeeBelongCity
+                      : '',
                   })(
                     <Input
                       type="text"

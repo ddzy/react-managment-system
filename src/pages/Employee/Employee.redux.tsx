@@ -15,6 +15,7 @@ const initialState: IInitialState = {
 export const SAVE_EMPLOYEE_LIST = 'SAVE_EMPLOYEE_LIST' as string;
 export const SAVE_ONE_EMPLOYEE_INFO = 'SAVE_ONE_EMPLOYEE_INFO' as string;
 export const SAVE_DELETE_ONE_EMPLOYEE = 'SAVE_DELETE_ONE_EMPLOYEE' as string;
+export const CHANGE_ONE_EMPLOYEE_INFO = 'CHANGE_ONE_EMPLOYEE_INFO' as string;
 
 
 
@@ -41,6 +42,15 @@ export function saveDeleteOneEmployee(
 ): { type: string, payload: any } {
   return {
     type: SAVE_DELETE_ONE_EMPLOYEE,
+    payload: data,
+  };
+}
+
+export function changeOneEmployeeInfo(
+  data: any
+): { type: string, payload: any } {
+  return {
+    type: CHANGE_ONE_EMPLOYEE_INFO,
     payload: data,
   };
 }
@@ -72,6 +82,18 @@ export function EmployeePageReducer(
           .filter((item: any) => {
             return item.employeeId !== action.payload.deleted_employee_info.employeeId;
           }),
+      };
+    }
+    case CHANGE_ONE_EMPLOYEE_INFO: {
+      return {
+        ...state,
+        employee_list: state
+          .employee_list
+          .map((item) => {
+            return item.employeeId === action.payload.changed_employee_info.employeeId
+              ? action.payload.changed_employee_info
+              : item;
+          })
       };
     }
     default: {
@@ -161,12 +183,12 @@ export function reduxHandleDeleteOneEmployee(
 
 
 /**
- * 员工管理 新增员工
+ * 员工管理 新增||编辑员工
  * @param employeeId 员工id
  * @param employeeInfo 新建员工信息
  * @param callback 回调
  */
-export function reduxHandleCreateOneEmployee(
+export function reduxHandleManageOneEmployee(
   employeeId: string,
   employeeInfo: any,
   callback?: () => void,
@@ -174,14 +196,14 @@ export function reduxHandleCreateOneEmployee(
   return (dispatch: ThunkDispatch<any, any, any>): void => {
     query({
       method: 'POST',
-      url: '/employee/create',
+      url: '/employee/manage',
       jsonp: false,
       data: {
         employeeId,
         employeeInfo,
       },
     }).then((res) => {
-      console.log(res);
+      dispatch(changeOneEmployeeInfo(res.data));
       callback && callback();
     });
   };

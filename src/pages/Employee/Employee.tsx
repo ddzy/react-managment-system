@@ -15,7 +15,7 @@ import {
   reduxHandleGetEmployeeList,
   reduxHandleGetOneEmployee,
   reduxHandleDeleteOneEmployee,
-  reduxHandleCreateOneEmployee,
+  reduxHandleManageOneEmployee,
 } from './Employee.redux';
 import EmployeeShow from './EmployeeShow/EmployeeShow';
 import EmployeeDisplayModal from './EmployeeModal/EmployeeDisplayModal';
@@ -41,7 +41,7 @@ export interface IEmployeeProps {
     employeeId: string,
     callback?: () => void,
   ) => void;
-  reduxHandleCreateOneEmployee: (
+  reduxHandleManageOneEmployee: (
     employeeId: string,
     employeeInfo: any,
     callback?: () => void,
@@ -54,6 +54,7 @@ interface IEmployeeState {
 
   // 新增|编辑modal
   controlModal: {
+    isEdit: boolean,
     drawerTitle: string,
     drawerVisible: boolean,
   },
@@ -81,6 +82,7 @@ class Employee extends React.PureComponent<
       displayModalTitle: '员工详情',
     },
     controlModal: {
+      isEdit: false,
       drawerTitle: '',
       drawerVisible: false,
     },
@@ -276,6 +278,7 @@ class Employee extends React.PureComponent<
         controlModal: {
           ...this.state.controlModal,
           drawerTitle: '新建员工',
+          isEdit: false,
           drawerVisible: !prevState.controlModal.drawerVisible,
         },
       };
@@ -289,19 +292,23 @@ class Employee extends React.PureComponent<
   public handleToggleEditDrawer: React.MouseEventHandler = (
     e: React.MouseEvent,
   ): void => {
-    this.setState((prevState) => {
-      return {
-        ...this.state,
-        controlModal: {
-          ...this.state.controlModal,
-          drawerTitle: '编辑员工',
-          drawerVisible: !prevState.controlModal.drawerVisible,
-        },
-      };
-    });
-    
-  }
 
+    if(this.state.rowKey) {
+      this.setState((prevState) => {
+        return {
+          ...this.state,
+          controlModal: {
+            ...this.state.controlModal,
+            isEdit: true,
+            drawerTitle: '编辑员工',
+            drawerVisible: !prevState.controlModal.drawerVisible,
+          },
+        };
+      });
+    }else {
+      message.error('请至少选择一个员工!');
+    } 
+  }
 
 
   /**
@@ -310,9 +317,22 @@ class Employee extends React.PureComponent<
   public handleDrawerSubmit = (
     values: any,
   ): void => {
-    this.props.reduxHandleCreateOneEmployee(
+    this.props.reduxHandleManageOneEmployee(
       this.state.rowKey,
       values,
+      () => {
+        this.setState((prevState) => {
+          return {
+            ...this.state,
+            controlModal: {
+              ...this.state.controlModal,
+              drawerVisible: !prevState.controlModal.drawerVisible,
+            },
+          };
+        });
+
+        message.success('提交成功!');
+      },
     );
   }
 
@@ -338,9 +358,10 @@ class Employee extends React.PureComponent<
           onToggleModal={this.handleToggleModal}
         />
 
-        {/* 创建员工 */}
+        {/* 创建|编辑 员工 */}
         <EmployeeControlModal 
           {...this.state.controlModal}
+          {...this.state.rows[0]}
           onToggleCreateDrawer={this.handleToggleCreateDrawer}
           onSubmit={this.handleDrawerSubmit}
         />
@@ -361,7 +382,7 @@ function mapDispatchToProps() {
     reduxHandleGetEmployeeList,
     reduxHandleGetOneEmployee,
     reduxHandleDeleteOneEmployee,
-    reduxHandleCreateOneEmployee,
+    reduxHandleManageOneEmployee,
   };
 }
 
