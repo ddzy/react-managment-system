@@ -12,6 +12,7 @@ import { CityPageReducer } from '../../pages/City/CityPage.redux';
 import { OrderPageReducer } from '../../pages/Order/Order.redux';
 import { EmployeePageReducer } from '../../pages/Employee/Employee.redux';
 import { BikeMapPageReducer } from '../../pages/BikeMap/BikeMap.redux';
+import { PermissionPageReducer } from '../../pages/Permission/Permission.redux';
 
 
 
@@ -28,6 +29,7 @@ const reducer = combineReducers({
   OrderPageReducer,
   EmployeePageReducer,
   BikeMapPageReducer,
+  PermissionPageReducer,
 });
 
 

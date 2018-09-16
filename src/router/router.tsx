@@ -30,6 +30,7 @@ import Order from '../pages/Order/Order';
 import Details from '../pages/Details/Details';
 import Employee from '../pages/Employee/Employee';
 import BikeMap from '../pages/BikeMap/BikeMap';
+import Permission from '../pages/Permission/Permission';
 
 
 
@@ -66,6 +67,7 @@ class RouterConfig extends React.PureComponent<{}, {}> {
                     <Route path="/order/details/:id" component={Details} />
                     <Route path="/employee" component={Employee} />
                     <Route path="/bikeMap" component={BikeMap} />
+                    <Route path="/permission" component={Permission} />
                   </Switch>
                 </Admin>
               )}

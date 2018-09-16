@@ -4,25 +4,25 @@ import { Table } from 'antd';
 
 
 export interface IBaseTableProps {
-  tableLoading: boolean;     // 加载状态
+  tableLoading?: boolean;     // 加载状态
 
   columns: object[];
   dataSource: any;
   showType: boolean;      // 是否显示单选框
 
-  onRowChange: (          // 处理选中行
+  onRowChange?: (          // 处理选中行
     rowKey: string,
     rows: any,
   ) => void;
   
-  onPagination: (         // 处理分页
+  onPagination?: (         // 处理分页
     page: number,
     pageSize: number,
   ) => void;     
 };
 
 
-const BaseTable = (
+const BaseTable: React.SFC<IBaseTableProps> = (
   props: IBaseTableProps,
 ) => {
 
@@ -44,13 +44,15 @@ const BaseTable = (
 
   /**
    * 处理 选中某一行
-   * @param args table行数据
+   * @param rowKey table行标识
+   * @param rows table整行数据
    */
   function handleRowChange(
     rowKey: string,
     rows: any,
   ) {
-    props.onRowChange(rowKey, rows);
+    props.onRowChange
+      && props.onRowChange(rowKey, rows);
   }
 
 
@@ -63,7 +65,8 @@ const BaseTable = (
     page: number, 
     pageSize: number,
   ) {
-    props.onPagination(page, pageSize);
+    props.onPagination
+      && props.onPagination(page, pageSize);
   }
 
   
