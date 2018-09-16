@@ -13,6 +13,7 @@ const initialState: IInitialState = {
 
 
 export const SAVE_MANAGER_LIST = 'SAVE_MANAGER_LIST' as string;
+export const SAVE_DELETED_MANAGER_INFO = 'SAVE_DELETED_MANAGER_INFO' as string;
 
 
 export function saveManagerList(
@@ -24,6 +25,16 @@ export function saveManagerList(
   };
 }
 
+export function saveDeletedManager(
+  data: any
+): { type: string, payload: any } {
+  return {
+    type: SAVE_DELETED_MANAGER_INFO,
+    payload: data,
+  };
+}
+
+
 
 export function PermissionPageReducer(
   state: IInitialState = initialState,
@@ -34,6 +45,19 @@ export function PermissionPageReducer(
       return {
         ...state,
         manager_list: action.payload.manager_list,
+      };
+    }
+    case SAVE_DELETED_MANAGER_INFO: {
+      return {
+        ...state,
+        manager_list: state
+          .manager_list
+          .filter((item) => {
+            return item.managerId !== action
+              .payload
+              .deleted_manager_info
+              .managerId;
+          }),
       };
     }
     default: {
@@ -58,7 +82,7 @@ export function reduxHandleGetManagerList(
   return (dispatch: ThunkDispatch<any, any, any>) => {
     query({
       method: 'GET',
-      url: '/permission/managerlist',
+      url: '/permission/manager/list',
       jsonp: false,
       data: {
         page,
@@ -66,6 +90,28 @@ export function reduxHandleGetManagerList(
       },
     }).then((res) => {
       dispatch(saveManagerList(res.data));
+      callback && callback();
+    });
+  };
+}
+
+
+
+
+export function reduxHandleDeleteManager(
+  managerId: string,
+  callback?: () => void,
+) {
+  return (dispatch: ThunkDispatch<any, any, any>): void => {
+    query({
+      method: 'GET',
+      url: '/permission/manager/delete',
+      jsonp: false,
+      data: {
+        managerId,
+      },
+    }).then((res) => {
+      dispatch(saveDeletedManager(res.data));
       callback && callback();
     });
   };

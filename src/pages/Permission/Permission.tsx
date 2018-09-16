@@ -5,6 +5,7 @@ import {
   message,
   Button,
   Divider,
+  Modal,
 } from 'antd';
 
 import {
@@ -14,6 +15,7 @@ import PermissionDisplay from './PermissionDisplay/PermissionDisplay';
 import {
   reduxHandleGetManagerList, 
   IInitialState,
+  reduxHandleDeleteManager,
 } from './Permission.redux';
 
 
@@ -23,6 +25,10 @@ export interface IPermissionProps {
   reduxHandleGetManagerList: (
     page: number,
     pageSize: number,
+    callback?: () => void,
+  ) => void;
+  reduxHandleDeleteManager: (
+    rowKey: string,
     callback?: () => void,
   ) => void;
 };
@@ -43,7 +49,6 @@ class Permission extends React.PureComponent<
 
   public readonly state = {
     tableLoading: false,
-
     rowKey: '',
     rows: '',
   }
@@ -164,6 +169,7 @@ class Permission extends React.PureComponent<
         <Button
           htmlType="button"
           type="primary"
+          onClick={this.handleDeleteManagerClick}
         >删除管理者</Button>
       </React.Fragment>
     );
@@ -178,9 +184,35 @@ class Permission extends React.PureComponent<
     rows: any,
   ) => {
     this.setState({
-      rowKey,
+      rowKey: rowKey[0],
       rows,
     });
+  }
+
+
+  /**
+   * 处理 删除管理者
+   */
+  public handleDeleteManagerClick: React.MouseEventHandler = (
+    e: React.MouseEvent,
+  ): void => {
+    if(this.state.rowKey) {
+      this.setState({ tableLoading: true });
+
+      Modal.confirm({
+        title: '确定要删除该管理者吗?',
+        onOk: (): void => {
+          this.props.reduxHandleDeleteManager(
+            this.state.rowKey,
+            (): void => {
+              this.setState({ tableLoading: false });
+            },
+          );
+        },
+      });
+    }else {
+      message.error('至少选择一项!');
+    }
   }
 
 
@@ -213,6 +245,7 @@ function mapStateToProps(state: any) {
 function mapDispatchToProps() {
   return {
     reduxHandleGetManagerList,
+    reduxHandleDeleteManager,
   };
 }
 
