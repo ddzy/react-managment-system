@@ -12,6 +12,7 @@ import {
   PermissionContainer,
 } from './style';
 import PermissionDisplay from './PermissionDisplay/PermissionDisplay';
+import PermissionAuthorizedModal from './PermissionModal/PermissionAuthorizedModal';
 import {
   reduxHandleGetManagerList, 
   IInitialState,
@@ -36,6 +37,11 @@ interface IPermissionState {
   readonly tableLoading: boolean;
   readonly rowKey: string,
   readonly rows: any,
+
+  // 修改权限模态框
+  readonly authorizedModal: {
+    visible: boolean,
+  },
 };
 
 
@@ -50,7 +56,13 @@ class Permission extends React.PureComponent<
   public readonly state = {
     tableLoading: false,
     rowKey: '',
-    rows: '',
+    rows: {
+      managerCurrentAuthorized: '',
+      managerName: '',
+    },
+    authorizedModal: {
+      visible: false,
+    },
   }
 
 
@@ -127,6 +139,11 @@ class Permission extends React.PureComponent<
         key: 'managerState',
       },
       {
+        title: '权限',
+        dataIndex: 'managerCurrentAuthorized',
+        key: 'managerCurrentAuthorized',
+      },
+      {
         title: '授权时间',
         dataIndex: 'managerAuthorizedTime',
         key: 'managerAuthorizedTime',
@@ -164,6 +181,7 @@ class Permission extends React.PureComponent<
         <Button
           htmlType="button"
           type="primary"
+          onClick={this.handleEditAuthorizedClick}
         >管理者授权</Button>
         <Divider type="vertical" />
         <Button
@@ -185,7 +203,7 @@ class Permission extends React.PureComponent<
   ) => {
     this.setState({
       rowKey: rowKey[0],
-      rows,
+      rows: rows[0],
     });
   }
 
@@ -205,7 +223,9 @@ class Permission extends React.PureComponent<
           this.props.reduxHandleDeleteManager(
             this.state.rowKey,
             (): void => {
-              this.setState({ tableLoading: false });
+              this.setState({ tableLoading: false }, () => {
+                message.success('删除成功!');
+              });
             },
           );
         },
@@ -213,6 +233,36 @@ class Permission extends React.PureComponent<
     }else {
       message.error('至少选择一项!');
     }
+  }
+
+
+  /**
+   * 处理 修改权限 模态框切换
+   */
+  public handleEditAuthorizedClick = (): void => {
+    this.state.rowKey
+      ? this.setState((prevState) => {
+          return {
+            ...this.state,
+            authorizedModal: {
+              ...this.state.authorizedModal,
+              visible: !prevState.authorizedModal.visible,
+            },
+          };
+        })
+      : message.error('请至少选择一项!');
+  }
+
+
+  /**
+   * 处理 修改权限 模态框提交
+   */
+  public handleEditAuthorizedSend: React.MouseEventHandler = (
+    values: any,
+    callback?: () => void,
+  ): void => {
+    console.log(values);
+    callback && callback();
   }
 
 
@@ -230,6 +280,22 @@ class Permission extends React.PureComponent<
             onPagination={this.handlePagination}
           />
         </Card>
+
+        {/* 设置权限modal */}
+        <PermissionAuthorizedModal 
+          initailManagerCurrentAuthorized={
+            this.state.rows.managerCurrentAuthorized
+          }
+          authorizedModalVisible={
+            this.state.authorizedModal.visible
+          }
+          initialManagerAuthorizedName={
+            this.state.rows.managerName
+          }
+
+          onCancel={this.handleEditAuthorizedClick}
+          onSend={this.handleEditAuthorizedSend}
+        />
       </PermissionContainer>
     );
   }
