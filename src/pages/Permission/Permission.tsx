@@ -13,6 +13,7 @@ import {
 } from './style';
 import PermissionDisplay from './PermissionDisplay/PermissionDisplay';
 import PermissionAuthorizedModal from './PermissionModal/PermissionAuthorizedModal';
+import PermissionControlModal from './PermissionModal/PermissionControlModal';
 import {
   reduxHandleGetManagerList, 
   IInitialState,
@@ -41,13 +42,21 @@ export interface IPermissionProps {
 };
 interface IPermissionState {
   readonly tableLoading: boolean;
-  readonly rowKey: string,
-  readonly rows: any,
+  readonly rowKey: string;
+  readonly rows: any;
 
   // 修改权限模态框
   readonly authorizedModal: {
     visible: boolean,
-  },
+  }
+
+  // 编辑 && 新建模态框
+  readonly controlModal: {
+    // 区分编辑 & 新建
+    isEdit: boolean,
+    title: string,
+    visible: boolean,
+  };
 };
 
 
@@ -68,6 +77,11 @@ class Permission extends React.PureComponent<
     },
     authorizedModal: {
       visible: false,
+    },
+    controlModal: {
+      title: '',
+      visible: false,
+      isEdit: false,
     },
   }
 
@@ -177,11 +191,13 @@ class Permission extends React.PureComponent<
         <Button
           htmlType="button"
           type="primary"
+          onClick={() => this.handleEditOrCreateClick('CREATE')}
         >创建管理人</Button>
         <Divider type="vertical" />
         <Button
           htmlType="button"
           type="primary"
+          onClick={() => this.handleEditOrCreateClick('EDIT')}
         >编辑管理者</Button>
         <Divider type="vertical" />
         <Button
@@ -278,6 +294,50 @@ class Permission extends React.PureComponent<
   }
 
 
+  /**
+   * 处理 编辑&&新建 模态框切换
+   */
+  public handleEditOrCreateClick = (
+    type: string,
+  ): void => {
+    switch(type) {
+      case 'CREATE': {
+        this.setState((prevState) => {
+          return {
+            ...this.state,
+            controlModal: {
+              ...this.state.controlModal,
+              title: '添加管理人',
+              visible: !prevState.controlModal.visible,
+              isEdit: false,
+            },
+          };
+        })
+        break;
+      }
+      case 'EDIT': {
+        this.state.rowKey
+          ? this.setState((prevState) => {
+              return {
+                ...this.state,
+                controlModal: {
+                  ...this.state.controlModal,
+                  title: '编辑管理人',
+                  visible: !prevState.controlModal.visible,
+                  isEdit: true,
+                },
+              };
+            })
+          : message.error('至少选择一个!');
+        break;
+      }
+      default: {
+        break;
+      }
+    }  
+  }
+
+
   public render(): JSX.Element {
     return (
       <PermissionContainer>
@@ -307,6 +367,12 @@ class Permission extends React.PureComponent<
 
           onCancel={this.handleEditAuthorizedClick}
           onSend={this.handleEditAuthorizedSend}
+        />
+
+        {/* 编辑 && 新建model */}
+        <PermissionControlModal
+          {...this.state.controlModal} 
+          onToggle={this.handleEditOrCreateClick}
         />
       </PermissionContainer>
     );

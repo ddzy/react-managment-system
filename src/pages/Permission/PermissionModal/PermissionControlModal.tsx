@@ -9,7 +9,10 @@ import {
 
 
 export interface IPermissionAuthorizedModalProps {
-  
+  title: string;
+  visible: boolean;
+
+  onToggle: (type: 'CREATE') => void;
 };
 
 
@@ -24,7 +27,9 @@ const PermissionControlModal = (
   return (
     <PermissionControlWrapper>
       <Modal
-        title="管理者授权"
+        title={props.title}
+        visible={props.visible}
+        onCancel={() => props.onToggle('CREATE')}
       >
         管理者授权
       </Modal>
