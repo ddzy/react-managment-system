@@ -14,6 +14,8 @@ const initialState: IInitialState = {
 
 export const SAVE_MANAGER_LIST = 'SAVE_MANAGER_LIST' as string;
 export const SAVE_DELETED_MANAGER_INFO = 'SAVE_DELETED_MANAGER_INFO' as string;
+export const SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED = 'SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED';
+
 
 
 export function saveManagerList(
@@ -30,6 +32,15 @@ export function saveDeletedManager(
 ): { type: string, payload: any } {
   return {
     type: SAVE_DELETED_MANAGER_INFO,
+    payload: data,
+  };
+}
+
+export function saveUpdatedCurrentAuthorized(
+  data: any
+): { type: string, payload: any } {
+  return {
+    type: SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED,
     payload: data,
   };
 }
@@ -60,12 +71,26 @@ export function PermissionPageReducer(
           }),
       };
     }
+    case SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED: {
+      return {
+        ...state,
+        manager_list: state
+          .manager_list
+          .map((item) => {
+            return item.managerId === action.payload.updated_manager_info.managerId
+              ? {
+                  ...item,
+                  managerCurrentAuthorized: action.payload.updated_manager_info.managerCurrentAuthorized,
+                }
+              : item;
+          }),
+      };
+    }
     default: {
       return state;
     }
   }
 }
-
 
 
 /**
@@ -96,8 +121,11 @@ export function reduxHandleGetManagerList(
 }
 
 
-
-
+/**
+ * 删除管理者
+ * @param managerId 管理者id
+ * @param callback 回调
+ */
 export function reduxHandleDeleteManager(
   managerId: string,
   callback?: () => void,
@@ -116,3 +144,33 @@ export function reduxHandleDeleteManager(
     });
   };
 }
+
+
+/**
+ * 修改管理者权限
+ * @param managerId 管理者id
+ * @param managerCurrentAuthorized 新的权限值
+ * @param callback 回调
+ */
+export function reduxHandleEditAuthorized(
+  managerId: string,
+  managerCurrentAuthorized: string,
+  callback?: () => void,
+) {
+  return (dispatch: ThunkDispatch<any, any, any>): void => {
+    query({
+      method: 'POST',
+      url: '/permission/manager/edit/authorize',
+      jsonp: false,
+      data: {
+        managerId,
+        managerCurrentAuthorized,
+      },
+    }).then((res) => {
+      dispatch(saveUpdatedCurrentAuthorized(res.data));
+      callback && callback();
+    });
+  };
+}
+
+

@@ -53,6 +53,7 @@ const PermissionAuthorizedModal = (
   return (
     <PermissionAuthorizedWrapper>
       <Modal
+        destroyOnClose={true}
         title={props.initialManagerAuthorizedName}
         visible={props.authorizedModalVisible}
         onCancel={props.onCancel}

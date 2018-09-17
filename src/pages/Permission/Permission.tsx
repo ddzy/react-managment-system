@@ -17,6 +17,7 @@ import {
   reduxHandleGetManagerList, 
   IInitialState,
   reduxHandleDeleteManager,
+  reduxHandleEditAuthorized,
 } from './Permission.redux';
 
 
@@ -30,6 +31,11 @@ export interface IPermissionProps {
   ) => void;
   reduxHandleDeleteManager: (
     rowKey: string,
+    callback?: () => void,
+  ) => void;
+  reduxHandleEditAuthorized: (
+    managerId: string,
+    managerCurrentAuthorized: string,
     callback?: () => void,
   ) => void;
 };
@@ -229,6 +235,9 @@ class Permission extends React.PureComponent<
             },
           );
         },
+        onCancel: () => {
+          this.setState({ tableLoading: false });
+        },
       });
     }else {
       message.error('至少选择一项!');
@@ -261,7 +270,10 @@ class Permission extends React.PureComponent<
     values: any,
     callback?: () => void,
   ): void => {
-    console.log(values);
+    this.props.reduxHandleEditAuthorized(
+      this.state.rowKey,
+      values.managerCurrentAuthorized,
+    );
     callback && callback();
   }
 
@@ -312,6 +324,7 @@ function mapDispatchToProps() {
   return {
     reduxHandleGetManagerList,
     reduxHandleDeleteManager,
+    reduxHandleEditAuthorized,
   };
 }
 
