@@ -1,16 +1,35 @@
 import * as React from 'react';
 import {
   Modal,
+  Form,
+  Input,
+  Radio,
+  Select,
+  Row,
+  Col,
+  DatePicker,
 } from 'antd';
+import { FormComponentProps } from 'antd/lib/form';
+import * as moment from 'moment';
 
 import {
   PermissionControlWrapper,
 } from '../style';
 
 
-export interface IPermissionAuthorizedModalProps {
+export interface IPermissionAuthorizedModalProps extends FormComponentProps {
+  isEdit: boolean;
   title: string;
   visible: boolean;
+
+  managerId?: string;
+  managerName?: string;
+  managerPosition?: string;
+  managerUpdateTime?: string;
+  managerState?: string;
+  managerCurrentAuthorized?: string;
+  managerAuthorizedTime?: string;
+  managerAuthorizedPerson?: string;
 
   onToggle: (type: 'CREATE') => void;
 };
@@ -22,7 +41,37 @@ export interface IPermissionAuthorizedModalProps {
 const PermissionControlModal = (
   props: IPermissionAuthorizedModalProps,
 ): JSX.Element => {
-  
+
+  const { getFieldDecorator } = props.form;
+
+
+  /**
+   * 处理提交
+   */
+  const handleSubmit: React.FormEventHandler = (
+    e: React.FormEvent,
+  ): void => {
+    e.preventDefault();
+
+    props.form.validateFields((err, fieldValues) => {
+      if (!err) {
+        // 格式化日期
+        const values: object = {
+          ...fieldValues,
+          managerAuthorizedTime: fieldValues
+            .managerAuthorizedTime
+            .format('YYYY-MM-DD HH:mm:ss'),
+          managerUpdateTime: fieldValues
+            .managerUpdateTime
+            .format('YYYY-MM-DD HH:mm:ss'),
+        };
+
+        console.log(values);
+      }
+    });
+  }
+
+
 
   return (
     <PermissionControlWrapper>
@@ -30,8 +79,180 @@ const PermissionControlModal = (
         title={props.title}
         visible={props.visible}
         onCancel={() => props.onToggle('CREATE')}
+        onOk={handleSubmit}
       >
-        管理者授权
+        <Form
+          layout="horizontal"
+          onSubmit={handleSubmit}
+        >
+          <Row gutter={16}> 
+            <Col span={12}>
+              <Form.Item
+                label="姓名"
+              >
+                {getFieldDecorator('employee_name', {
+                  rules: [{
+                    required: true,
+                    message: '管理者姓名不能为空!'
+                  }],
+                  initialValue: props.isEdit
+                    ? ''
+                    : ''
+                })(
+                  <Input
+                    type="text"
+                    placeholder="管理者姓名..."
+                  />
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="管理职称"
+              >
+                {getFieldDecorator('employee_gender', {
+                  rules: [{
+                    required: true,
+                    message: '请至少选择一个!'
+                  }],
+                  initialValue: props.isEdit
+                    ? ''
+                    : ''
+                })(
+                  <Select>
+                    <Select.Option value="管理专员">
+                      管理专员
+                    </Select.Option>
+                    <Select.Option value="财物专员">
+                      财物专员
+                    </Select.Option>
+                    <Select.Option value="客服专员">
+                      客服专员
+                    </Select.Option>
+                    <Select.Option value="营销专员">
+                      营销专员
+                    </Select.Option>
+                    <Select.Option value="生产专员">
+                      生产专员
+                    </Select.Option>
+                    <Select.Option value="招聘主管">
+                      招聘主管
+                    </Select.Option>
+                    <Select.Option value="培训总监">
+                      培训总监
+                    </Select.Option>
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16} style={{ marginTop: '20px' }}>
+            <Col span={12}>
+              <Form.Item
+                label="更新时间"
+              >
+                {getFieldDecorator('employee_state', {
+                  rules: [{
+                    required: true,
+                    message: '至少选择一个状态!',
+                  }],
+                  initialValue: props.isEdit
+                    // ? moment(
+                    //     props.employeeJoinTime,
+                    //     'YYYY-MM-DD',
+                    //   )
+                    ? ''
+                    : moment(
+                      new Date()
+                        .toLocaleDateString()
+                        .replace('/', '-'),
+                      'YYYY-MM-DD',
+                    ),
+                })(
+                  <DatePicker />
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="状态"
+              >
+                {getFieldDecorator('managerState', {
+                  rules: [{
+                    required: true,
+                    message: '至少选择一个!',
+                  }],
+                  initialValue: props.isEdit
+                    ? ''
+                    : ''
+                })(
+                  <Radio.Group buttonStyle="solid">
+                    <Radio.Button
+                      value="在职"
+                    >在职</Radio.Button>
+                    <Radio.Button
+                      value="离职"
+                    >离职</Radio.Button>
+                    <Radio.Button
+                      value="请假"
+                    >请假</Radio.Button>
+                  </Radio.Group>
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16} style={{ marginTop: '20px' }}>
+            <Col span={12}>
+              <Form.Item label="授权时间">
+                {getFieldDecorator('managerAuthorizedTime', {
+                  rules: [{
+                    required: true,
+                    message: '授权时间为必选项!',
+                  }],
+                  initialValue: props.isEdit
+                    // ? moment(
+                    //     props.employeeJoinTime,
+                    //     'YYYY-MM-DD',
+                    //   )
+                    ? ''
+                    : moment(
+                      new Date()
+                        .toLocaleDateString()
+                        .replace('/', '-'),
+                      'YYYY-MM-DD',
+                    ),
+                })(
+                  <DatePicker />
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="授权人">
+                {getFieldDecorator('managerAuthorizedPerson', {
+                  rules: [{
+                    required: true,
+                    message: '此为必填项!',
+                  }],
+                  initialValue: props.isEdit
+                    ? ''
+                    : '',
+                })(
+                  <Select>
+                    <Select.Option value="朝阳">
+                      朝阳
+                    </Select.Option>
+                    <Select.Option value="ygg">
+                      ygg
+                    </Select.Option>
+                    <Select.Option value="Mr_Duan">
+                      Mr_Duan
+                    </Select.Option>
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
       </Modal>
     </PermissionControlWrapper>
   );
@@ -40,4 +261,4 @@ const PermissionControlModal = (
 };
 
 
-export default PermissionControlModal;
+export default Form.create()(PermissionControlModal);
