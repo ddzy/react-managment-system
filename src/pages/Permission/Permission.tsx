@@ -20,6 +20,7 @@ import {
   reduxHandleDeleteManager,
   reduxHandleEditAuthorized,
   reduxHandleCreateManager,
+  reduxHandleEditManager,
 } from './Permission.redux';
 
 
@@ -41,6 +42,10 @@ export interface IPermissionProps {
     callback?: () => void,
   ) => void;
   reduxHandleCreateManager: (
+    managerInfo: any,
+    callback?: () => void,
+  ) => void;
+  reduxHandleEditManager: (
     managerInfo: any,
     callback?: () => void,
   ) => void;
@@ -353,23 +358,24 @@ class Permission extends React.PureComponent<
       tableLoading: true,
     });
 
-    // this.props.reduxHandleCreateManager(
-    //   this.state.controlModal.isEdit
-    //     ? this.state.rowKey
-    //     : '',
-    //   managerInfo,
-    //   () => {
-    //     this.setState({ tableLoading: false });
-    //   },
-    // );
     this.state.controlModal.isEdit
-      ? ''
+      ? this.props.reduxHandleEditManager(
+          {
+            ...managerInfo,
+            managerId: this.state.rowKey,
+          },
+          () => {
+            message.info('编辑成功!');
+          },
+        )
       : this.props.reduxHandleCreateManager(
         managerInfo,
         () => {
           message.info('创建成功!');
         },
       )
+
+    this.setState({ tableLoading: false });
 
   }
 
@@ -430,6 +436,7 @@ function mapDispatchToProps() {
     reduxHandleDeleteManager,
     reduxHandleEditAuthorized,
     reduxHandleCreateManager,
+    reduxHandleEditManager,
   };
 }
 

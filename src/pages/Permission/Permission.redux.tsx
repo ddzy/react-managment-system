@@ -16,6 +16,7 @@ export const SAVE_MANAGER_LIST = 'SAVE_MANAGER_LIST' as string;
 export const SAVE_DELETED_MANAGER_INFO = 'SAVE_DELETED_MANAGER_INFO' as string;
 export const SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED = 'SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED' as string;
 export const SAVE_NEW_MANAGER_INFO = 'SAVE_NEW_MANAGER_INFO' as string;
+export const SAVE_UPDATED_MANAGER_INFO = 'SAVE_UPDATED_MANAGER_INFO' as string;
 
 
 
@@ -51,6 +52,15 @@ export function saveNewManagerInfo(
 ): { type: string, payload: any } {
   return {
     type: SAVE_NEW_MANAGER_INFO,
+    payload: data,
+  };
+}
+
+export function saveUpdatedManagerInfo(
+  data: any
+): { type: string, payload: any } {
+  return {
+    type: SAVE_UPDATED_MANAGER_INFO,
     payload: data,
   };
 }
@@ -103,6 +113,18 @@ export function PermissionPageReducer(
           action.payload.new_manager_info,
           ...state.manager_list,
         ],
+      };
+    }
+    case SAVE_UPDATED_MANAGER_INFO: {
+      return {
+        ...state,
+        manager_list: state
+          .manager_list
+          .map((item) => {
+            return item.managerId === action.payload.updated_manager_info.managerId
+              ? action.payload.updated_manager_info
+              : item;  
+          }),
       };
     }
     default: {
@@ -194,8 +216,8 @@ export function reduxHandleEditAuthorized(
 
 
 /**
- * 新建 || 编辑管理者
- * @param managerInfo 新建 || 编辑后的管理者信息
+ * 新建 管理者
+ * @param managerInfo 新建 管理者信息
  * @param callback 回调
  */
 export function reduxHandleCreateManager(
@@ -218,4 +240,29 @@ export function reduxHandleCreateManager(
   }
 }
 
+
+/**
+ * 编辑管理者
+ * @param managerInfo 编辑后的信息
+ * @param callback 回调
+ */
+export function reduxHandleEditManager(
+  managerInfo: any,
+  callback?: () => void,
+): (dispatch: ThunkDispatch<any, any, any>) => void {
+  return (dispatch: ThunkDispatch<any, any, any>): void => {
+    query({
+      method: 'POST',
+      url: '/permission/manager/update',
+      data: {
+        managerInfo,
+      },
+      jsonp: false,
+    }).then((res) => {
+      console.log(res);
+      dispatch(saveUpdatedManagerInfo(res.data));
+      callback && callback();
+    });
+  }
+}
 
