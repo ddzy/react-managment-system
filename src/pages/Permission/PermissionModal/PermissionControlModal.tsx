@@ -32,6 +32,9 @@ export interface IPermissionAuthorizedModalProps extends FormComponentProps {
   managerAuthorizedPerson?: string;
 
   onToggle: (type: 'CREATE') => void;
+  onControlModalSubmit: (
+    managerInfo: any,
+  ) => void;
 };
 
 
@@ -60,13 +63,15 @@ const PermissionControlModal = (
           ...fieldValues,
           managerAuthorizedTime: fieldValues
             .managerAuthorizedTime
-            .format('YYYY-MM-DD HH:mm:ss'),
+            .format('YYYY-MM-DD'),
           managerUpdateTime: fieldValues
             .managerUpdateTime
-            .format('YYYY-MM-DD HH:mm:ss'),
+            .format('YYYY-MM-DD'),
         };
 
-        console.log(values);
+        // 提交父组件
+        props.onControlModalSubmit(values);
+        props.onToggle('CREATE');
       }
     });
   }
@@ -90,7 +95,7 @@ const PermissionControlModal = (
               <Form.Item
                 label="姓名"
               >
-                {getFieldDecorator('employee_name', {
+                {getFieldDecorator('managerName', {
                   rules: [{
                     required: true,
                     message: '管理者姓名不能为空!'
@@ -110,7 +115,7 @@ const PermissionControlModal = (
               <Form.Item
                 label="管理职称"
               >
-                {getFieldDecorator('employee_gender', {
+                {getFieldDecorator('managerPosition', {
                   rules: [{
                     required: true,
                     message: '请至少选择一个!'
@@ -151,7 +156,7 @@ const PermissionControlModal = (
               <Form.Item
                 label="更新时间"
               >
-                {getFieldDecorator('employee_state', {
+                {getFieldDecorator('managerUpdateTime', {
                   rules: [{
                     required: true,
                     message: '至少选择一个状态!',
@@ -246,6 +251,33 @@ const PermissionControlModal = (
                     </Select.Option>
                     <Select.Option value="Mr_Duan">
                       Mr_Duan
+                    </Select.Option>
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <Form.Item label="权限">
+                {getFieldDecorator('managerCurrentAuthorized', {
+                  rules: [{
+                    required: true,
+                    message: '必选项',
+                  }],
+                })(
+                  <Select>
+                    <Select.Option value="初级">
+                      初级
+                    </Select.Option>
+                    <Select.Option value="中等">
+                      中等
+                    </Select.Option>
+                    <Select.Option value="高级">
+                      高级
+                    </Select.Option>
+                    <Select.Option value="超级">
+                      超级
                     </Select.Option>
                   </Select>
                 )}

@@ -14,7 +14,8 @@ const initialState: IInitialState = {
 
 export const SAVE_MANAGER_LIST = 'SAVE_MANAGER_LIST' as string;
 export const SAVE_DELETED_MANAGER_INFO = 'SAVE_DELETED_MANAGER_INFO' as string;
-export const SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED = 'SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED';
+export const SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED = 'SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED' as string;
+export const SAVE_NEW_MANAGER_INFO = 'SAVE_NEW_MANAGER_INFO' as string;
 
 
 
@@ -41,6 +42,15 @@ export function saveUpdatedCurrentAuthorized(
 ): { type: string, payload: any } {
   return {
     type: SAVE_UPDATED_MANAGER_CURRENT_AUTHORIZED,
+    payload: data,
+  };
+}
+
+export function saveNewManagerInfo(
+  data: any
+): { type: string, payload: any } {
+  return {
+    type: SAVE_NEW_MANAGER_INFO,
     payload: data,
   };
 }
@@ -84,6 +94,15 @@ export function PermissionPageReducer(
                 }
               : item;
           }),
+      };
+    }
+    case SAVE_NEW_MANAGER_INFO: {
+      return {
+        ...state,
+        manager_list: [
+          action.payload.new_manager_info,
+          ...state.manager_list,
+        ],
       };
     }
     default: {
@@ -171,6 +190,31 @@ export function reduxHandleEditAuthorized(
       callback && callback();
     });
   };
+}
+
+
+/**
+ * 新建管理者
+ * @param managerInfo 新建的管理者信息
+ * @param callback 回调
+ */
+export function reduxHandleCreateManager(
+  managerInfo: any,
+  callback?: () => void,
+): (dispatch: ThunkDispatch<any, any, any>) => void {
+  return (dispatch: ThunkDispatch<any, any, any>): void => {
+    query({
+      method: 'POST',
+      url: '/permission/manager/create',
+      jsonp: false,
+      data: {
+        managerInfo,
+      },
+    }).then((res): void => {
+      dispatch(saveNewManagerInfo(res.data));
+      callback && callback();
+    })
+  }
 }
 
 

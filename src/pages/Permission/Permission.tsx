@@ -19,6 +19,7 @@ import {
   IInitialState,
   reduxHandleDeleteManager,
   reduxHandleEditAuthorized,
+  reduxHandleCreateManager,
 } from './Permission.redux';
 
 
@@ -37,6 +38,10 @@ export interface IPermissionProps {
   reduxHandleEditAuthorized: (
     managerId: string,
     managerCurrentAuthorized: string,
+    callback?: () => void,
+  ) => void;
+  reduxHandleCreateManager: (
+    managerInfo: any,
     callback?: () => void,
   ) => void;
 };
@@ -338,6 +343,25 @@ class Permission extends React.PureComponent<
   }
 
 
+  /**
+   * 处理 编辑&&新建 模态框提交
+   */
+  public handleControlModalSubmit = (
+    managerInfo: any,
+  ) => {
+    this.setState({
+      tableLoading: true,
+    });
+
+    this.props.reduxHandleCreateManager(
+      managerInfo,
+      (): void => {
+        this.setState({ tableLoading: false });
+      },
+    );
+  }
+
+
   public render(): JSX.Element {
     return (
       <PermissionContainer>
@@ -373,6 +397,7 @@ class Permission extends React.PureComponent<
         <PermissionControlModal
           {...this.state.controlModal} 
           onToggle={this.handleEditOrCreateClick}
+          onControlModalSubmit={this.handleControlModalSubmit}
         />
       </PermissionContainer>
     );
@@ -391,6 +416,7 @@ function mapDispatchToProps() {
     reduxHandleGetManagerList,
     reduxHandleDeleteManager,
     reduxHandleEditAuthorized,
+    reduxHandleCreateManager,
   };
 }
 
