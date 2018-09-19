@@ -22,6 +22,7 @@ export interface IPermissionAuthorizedModalProps extends FormComponentProps {
   title: string;
   visible: boolean;
 
+  // 编辑 - 初始值
   managerId?: string;
   managerName?: string;
   managerPosition?: string;
@@ -46,7 +47,6 @@ const PermissionControlModal = (
 ): JSX.Element => {
 
   const { getFieldDecorator } = props.form;
-
 
   /**
    * 处理提交
@@ -81,6 +81,7 @@ const PermissionControlModal = (
   return (
     <PermissionControlWrapper>
       <Modal
+        destroyOnClose={true}
         title={props.title}
         visible={props.visible}
         onCancel={() => props.onToggle('CREATE')}
@@ -101,7 +102,7 @@ const PermissionControlModal = (
                     message: '管理者姓名不能为空!'
                   }],
                   initialValue: props.isEdit
-                    ? ''
+                    ? props.managerName
                     : ''
                 })(
                   <Input
@@ -121,7 +122,7 @@ const PermissionControlModal = (
                     message: '请至少选择一个!'
                   }],
                   initialValue: props.isEdit
-                    ? ''
+                    ? props.managerPosition
                     : ''
                 })(
                   <Select>
@@ -162,11 +163,9 @@ const PermissionControlModal = (
                     message: '至少选择一个状态!',
                   }],
                   initialValue: props.isEdit
-                    // ? moment(
-                    //     props.employeeJoinTime,
-                    //     'YYYY-MM-DD',
-                    //   )
-                    ? ''
+                    ? moment(
+                        props.managerUpdateTime,
+                      )
                     : moment(
                       new Date()
                         .toLocaleDateString()
@@ -174,7 +173,9 @@ const PermissionControlModal = (
                       'YYYY-MM-DD',
                     ),
                 })(
-                  <DatePicker />
+                  <React.Fragment>
+                    <DatePicker />
+                  </React.Fragment>
                 )}
               </Form.Item>
             </Col>
@@ -188,7 +189,7 @@ const PermissionControlModal = (
                     message: '至少选择一个!',
                   }],
                   initialValue: props.isEdit
-                    ? ''
+                    ? props.managerState
                     : ''
                 })(
                   <Radio.Group buttonStyle="solid">
@@ -215,11 +216,9 @@ const PermissionControlModal = (
                     message: '授权时间为必选项!',
                   }],
                   initialValue: props.isEdit
-                    // ? moment(
-                    //     props.employeeJoinTime,
-                    //     'YYYY-MM-DD',
-                    //   )
-                    ? ''
+                    ? moment(
+                        props.managerAuthorizedTime
+                      )
                     : moment(
                       new Date()
                         .toLocaleDateString()
@@ -239,7 +238,7 @@ const PermissionControlModal = (
                     message: '此为必填项!',
                   }],
                   initialValue: props.isEdit
-                    ? ''
+                    ? props.managerAuthorizedPerson
                     : '',
                 })(
                   <Select>
@@ -265,6 +264,9 @@ const PermissionControlModal = (
                     required: true,
                     message: '必选项',
                   }],
+                  initialValue: props.isEdit
+                    ? props.managerCurrentAuthorized
+                    : '',
                 })(
                   <Select>
                     <Select.Option value="初级">

@@ -353,12 +353,24 @@ class Permission extends React.PureComponent<
       tableLoading: true,
     });
 
-    this.props.reduxHandleCreateManager(
-      managerInfo,
-      (): void => {
-        this.setState({ tableLoading: false });
-      },
-    );
+    // this.props.reduxHandleCreateManager(
+    //   this.state.controlModal.isEdit
+    //     ? this.state.rowKey
+    //     : '',
+    //   managerInfo,
+    //   () => {
+    //     this.setState({ tableLoading: false });
+    //   },
+    // );
+    this.state.controlModal.isEdit
+      ? ''
+      : this.props.reduxHandleCreateManager(
+        managerInfo,
+        () => {
+          message.info('创建成功!');
+        },
+      )
+
   }
 
 
@@ -395,7 +407,8 @@ class Permission extends React.PureComponent<
 
         {/* 编辑 && 新建model */}
         <PermissionControlModal
-          {...this.state.controlModal} 
+          {...this.state.controlModal}
+          {...this.state.rows} 
           onToggle={this.handleEditOrCreateClick}
           onControlModalSubmit={this.handleControlModalSubmit}
         />

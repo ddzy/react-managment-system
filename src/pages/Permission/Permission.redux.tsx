@@ -194,14 +194,15 @@ export function reduxHandleEditAuthorized(
 
 
 /**
- * 新建管理者
- * @param managerInfo 新建的管理者信息
+ * 新建 || 编辑管理者
+ * @param managerInfo 新建 || 编辑后的管理者信息
  * @param callback 回调
  */
 export function reduxHandleCreateManager(
   managerInfo: any,
   callback?: () => void,
 ): (dispatch: ThunkDispatch<any, any, any>) => void {
+
   return (dispatch: ThunkDispatch<any, any, any>): void => {
     query({
       method: 'POST',
